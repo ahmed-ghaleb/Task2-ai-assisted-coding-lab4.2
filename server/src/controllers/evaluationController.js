@@ -3,7 +3,7 @@ import { Evaluation } from '../models/Evaluation.js';
 
 const createSchema = Joi.object({
   seminarCode: Joi.string().required(),
-  score: Joi.number().integer().min(1).max(5).required(),
+  score: Joi.number().min(1).max(5).required(),
   comment: Joi.string().optional(),
   evaluatedBy: Joi.string().hex().length(24).optional()
 });
@@ -33,12 +33,7 @@ export async function createEvaluation(req, res, next) {
 
     const evaluation = await Evaluation.create(value);
     res.status(201).json({ evaluation });
-  } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).json({ message: 'Evaluation already exists for this user and seminar' });
-    }
-    next(err);
-  }
+  } catch (err) { next(err); }
 }
 
 // GET /api/evaluations/summary?seminarCode=SM101
